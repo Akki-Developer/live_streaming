@@ -1,104 +1,3 @@
-/*var connection = new WebSocket('ws://localhost:9898'); 
-var name = ""; 
- 
-var loginInput = document.querySelector('#loginInput'); 
-var loginBtn = document.querySelector('#loginBtn'); 
-var otherUsernameInput = document.querySelector('#otherUsernameInput'); 
-var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn'); 
-var connectedUser, myConnection;
-  
-//when a user clicks the login button 
-loginBtn.addEventListener("click", function(event){ 
-   name = loginInput.value; 
-	
-   if(name.length > 0){ 
-      send({ 
-         type: "login", 
-         name: name 
-      }); 
-   } 
-	
-});
-
-//connection message
-connection.onopen = function() {
-   console.log('WebSocket Client Connected');
-   connection.send('Hi this is web client.');
-};
-
-//handle messages from the server 
-connection.onmessage = function (message) { 
-   console.log("Got message", message.data);
-   var data = JSON.parse(message.data); 
-	
-   switch(data.type) { 
-      case "login": 
-         onLogin(data.success); 
-         break; 
-      case "offer": 
-         onOffer(data.offer, data.name); 
-         break; 
-      case "answer": 
-         onAnswer(data.answer); 
-         break; 
-      case "candidate": 
-         onCandidate(data.candidate); 
-         break; 
-      default: 
-         break; 
-   } 
-};
-  
-//when a user logs in 
-function onLogin(success) { 
-
-   if (success === false) { 
-      alert("oops...try a different username"); 
-   } else { 
-      //creating our RTCPeerConnection object 
-		
-      var configuration = { 
-         'iceServers':[{   urls: [ "stun:bn-turn1.xirsys.com" ]}, {   username: "fZZeTx84bSFZFO01LWJOyIbocVRv-GQG1wwvWJzBtZwhKbTd9ef1XwgLwCaHPnQGAAAAAGCPtJhwcmFkY3NlcnZlcg==",   credential: "c9f08894-abe9-11eb-a664-0242ac140004",   urls: [       "turn:bn-turn1.xirsys.com:80?transport=udp",       "turn:bn-turn1.xirsys.com:3478?transport=udp",       "turn:bn-turn1.xirsys.com:80?transport=tcp",       "turn:bn-turn1.xirsys.com:3478?transport=tcp",       "turns:bn-turn1.xirsys.com:443?transport=tcp",       "turns:bn-turn1.xirsys.com:5349?transport=tcp"   ]}]
-      }; 
-		
-      myConnection = new webkitRTCPeerConnection(configuration); 
-      console.log("RTCPeerConnection object was created"); 
-      console.log("myConnection",myConnection); 
-  
-      //setup ice handling
-      //when the browser finds an ice candidate we send it to another peer 
-      myConnection.onicecandidate = function (event) { 
-		
-         if (event.candidate) { 
-            send({ 
-               type: "candidate", 
-               candidate: event.candidate 
-            }); 
-         } 
-      }; 
-   } 
-};
-  
-// connection.onopen = function () { 
-//    console.log("Connected"); 
-// };
-  
-connection.onerror = function (err) { 
-   console.log("Got error", err); 
-};
-  
-// Alias for sending messages in JSON format 
-function send(message) { 
-
-   if (connectedUser) { 
-      message.name = connectedUser; 
-   } 
-	
-   connection.send(JSON.stringify(message)); 
-};
-
-*/
-
 //our username 
 var name; 
 var connectedUser;
@@ -206,16 +105,16 @@ function handleLogin(success) {
          //displaying local video stream on the page 
          // localVideo.src = window.URL.createObjectURL(stream);
 			//insert stream into the video tag
-         if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            // Not adding `{ audio: true }` since we only want video now
-            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+         // if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+         //    // Not adding `{ audio: true }` since we only want video now
+         //    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
                 //video.src = window.URL.createObjectURL(stream);
-                localVideo.srcObject = stream;
-                localVideo.play();
-            });
-         }
+         localVideo.srcObject = stream;
+         localVideo.play();
+         //    });
+         // }
 
-         //using Google public stun server 
+         //using xirsys turn server 
          var configuration = { 
             "iceServers": [{
                urls: [ "stun:bn-turn1.xirsys.com" ]
@@ -241,14 +140,14 @@ function handleLogin(success) {
          //when a remote user adds stream to the peer connection, we display it 
          yourConn.onaddstream = function (e) { 
             // remoteVideo.src = window.URL.createObjectURL(e.stream); 
-            if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-               // Not adding `{ audio: true }` since we only want video now
-               navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            // if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            //    // Not adding `{ audio: true }` since we only want video now
+            //    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
                    //video.src = window.URL.createObjectURL(stream);
-                   remoteVideo.srcObject = stream;
-                   remoteVideo.play();
-               });
-            }
+            remoteVideo.srcObject = stream;
+            remoteVideo.play();
+            //    });
+            // }
          };
 			
          // Setup ice handling 
