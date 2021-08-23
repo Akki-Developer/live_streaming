@@ -3,7 +3,7 @@ var name;
 var connectedUser;
   
 //connecting to our signaling server
-var conn = new WebSocket('ws://mobikul-saas.webkul.com:9090'); 
+var conn = new WebSocket('wss://mobikul-saas.webkul.com:9090'); 
   
 conn.onopen = function () { 
    console.log("Connected to the signaling server"); 
